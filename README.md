@@ -1,4 +1,4 @@
-![아이콘](https://raw.githubusercontent.com/fmaru/fmaru/master/build/icon.png)
+![아이콘](https://raw.githubusercontent.com/fmaru/fmaru/master/build/icon.png | width=100)
 # fmaru
 fmaru는 마루마루의 만화를 광고 없이 편하게 볼 수 있는 오픈소스 뷰어 프로그램입니다.
 
