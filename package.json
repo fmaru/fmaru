@@ -7,7 +7,7 @@
     "start_web" : "gulp start_web",
     "start_server" : "node ./server/server.js",
     "build_electron" : "gulp build_electron; cd app; npm install; cd ..; ./node_modules/.bin/build -d",
-    "build_electron:win": "gulp build_electron && cd app && npm install && cd .. && .\\node_modules\\.bin\\build -d --arch ia32"
+    "build_electron:win": "gulp build_electron && cd app && npm install && cd .. && .\\node_modules\\.bin\\build --arch ia32"
   },
   "repository": {
     "type": "git",
