@@ -8,17 +8,17 @@ let win;
 
 function createWindow() {
   win = new BrowserWindow({width: 800, height: 600});
-  win.loadURL(`file://${__dirname}/../index.html`);
+  win.loadURL('http://localhost:' + api.get('port') + '/index.html');
   win.on('closed', () => {
     console.log("closed");
     win = null;
   });
 }
 
-app.on('ready', createWindow);
 app.on('ready', function(){
   api.listen(api.get('port'), function() {
     console.log('Node api is running on port', api.get('port'));
+    createWindow();
   });
 });
 

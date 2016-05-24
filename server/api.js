@@ -10,6 +10,7 @@ app.use(cors());
 app.disable('etag');
 app.set('port', (process.env.PORT || 54021));
 app.use(express.static(`${__dirname}/../`));
+app.use(express.static(`${__dirname}/../app`));
 
 var cache = null;
 
