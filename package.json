@@ -1,6 +1,6 @@
 {
   "name": "fmaru",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "free marumaru 혹은 fuck marumaru",
   "main": "electron/main.js",
   "scripts": {
