@@ -121,6 +121,9 @@ function image_list(url, cb) {
           urls = []
           var img = $('img').each(function(idx){
             url = this.getAttribute('data-lazy-src');
+            if (!url){
+              url = this.getAttribute("data-src");
+            }
             if (url){
               urls.push(url);
             }
