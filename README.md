@@ -1,4 +1,8 @@
 ![아이콘](https://raw.githubusercontent.com/fmaru/fmaru/master/build/icon.png)
+
+### 홍보와 보상
+트위터/블로그 등에 fmaru 홍보글을 작성해주시고 issue나 fmarumaru6@gmail.com으로 연락주시면 fmaru 프로그램 내의 스폰서 메뉴에 프로모션 스폰서로 아이콘, 닉네임, url을 넣어드립니다. 
+
 # fmaru
 fmaru는 마루마루의 만화를 광고 없이 편하게 볼 수 있는 오픈소스 뷰어 프로그램입니다.
 
