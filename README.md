@@ -46,7 +46,7 @@ fmaru는 현재 윈도우즈/맥용 클라이언트만 있습니다. 하지만 �
  fmaru는 웹사이트로 서비스 될 수 있습니다.
 
     $ npm install -g gulp-cli
-    $ npm start --save-dev
+    $ npm install --save-dev
     $ gulp build_web
     $ node server/server.js
   
