@@ -39,7 +39,7 @@ fmaru는 현재 윈도우즈/맥용 클라이언트만 있습니다. 하지만 �
 ## 앱 빌드 방법
     
     $ npm install -g gulp-cli
-    $ npm start --save-dev
+    $ npm install --save-dev
     $ npm run build_electron
 
 # 서비스하는 방법
