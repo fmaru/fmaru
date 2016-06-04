@@ -59,7 +59,11 @@ class EpisodePage extends React.Component {
   }
 
   _convertUrl(url) {
-    if (url.toLowerCase().indexOf("yuncomic") > -1){
+    if (url.endsWith("dat")){
+      return config.apiUrl + "/dat?url=" + url;
+
+    }
+    else if (url.toLowerCase().indexOf("yuncomic") > -1){
       var comps = url.split('/').slice(3);
       return config.apiUrl + "/image/" + comps.join("/");
     }

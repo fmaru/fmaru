@@ -14,6 +14,19 @@ const headers = {
   'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.94 Safari/537.36'
 }
 
+function download(url, cb){
+  unirest.get(url)
+    .headers(headers)
+    .send()
+    .end(response => {
+      if (!response.ok){
+        cb(response.error, null);
+        return;
+      }
+      cb(null, response.body);
+    });
+}
+
 function manga_list(cb){
   unirest.get('http://marumaru.in/c/1')
     .headers(headers)
@@ -120,9 +133,12 @@ function image_list(url, cb) {
         else {
           urls = []
           var img = $('img').each(function(idx){
-            url = this.getAttribute('data-lazy-src');
+            var url = this.getAttribute("ks-token");
             if (!url){
               url = this.getAttribute("data-src");
+            }
+            if (!url){
+              url = this.getAttribute('data-lazy-src');
             }
             if (url){
               urls.push(url);
@@ -154,6 +170,7 @@ module.exports = {
   manga_list: manga_list,
   manga_detail: manga_detail,
   image_list: image_list,
-  image: image
+  image: image,
+  download: download
 };
 
