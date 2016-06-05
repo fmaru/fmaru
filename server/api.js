@@ -91,7 +91,12 @@ app.get("/dat", function(req, res){
       res.send({error:"no data"});
       return;
     }
-    var ksToken= JSON.parse(data);
+    try{
+      var ksToken = JSON.parse(data);
+    }catch(err){
+      res.send({error:err});
+      return;
+    }
     if (!ksToken) {
       res.send({error:"invalid data"});
       return;
@@ -101,7 +106,7 @@ app.get("/dat", function(req, res){
     if (!ksToken.x) { // knitskill ver.1
       sliceSize = ksToken.s ^ 0xe1;
       key = ksToken.k ^ 0x7b;
-      imgData = new Buffer(ksToken.data, "base64");
+      imgData = Buffer.from(ksToken.data, "base64");
     }
     else if (ksToken.x ^ 0x87 === 2) { // knitskill ver.2?
       var ver2EncKey = [
@@ -119,11 +124,11 @@ app.get("/dat", function(req, res){
       sliceSize = ksToken.w ^ 0x4e;
       key = ksToken.h ^ 0xbb;
 
-      var tempData = new Buffer(ksToken.data, 'base64');
+      var tempData = Buffer.from(ksToken.data, 'base64');
       for(var i = 0; i < tempData.length; i++) {
         imgData += String.fromCharCode(tempData[i] ^ ver2EncKey[i % ver2EncKey.length]);
       }
-      imgData = new Buffer(imgData, 'binary')
+      imgData = Buffer.from(imgData, 'binary')
     }
 
     Jimp.read(imgData, function(err, img){
