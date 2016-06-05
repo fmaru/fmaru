@@ -87,16 +87,46 @@ app.get(/image(\/.*)/, proxy('www.yuncomics.com', {
 app.get("/dat", function(req, res){
   var url = req.query['url'];
   maru.download(url, function(err, data){
-    var table = JSON.parse(data);
-    var data = new Buffer(table["data"], "base64");
-    var sliceSize = table["s"] ^ 0xe1;
-    var key = table["k"] ^ 0x7b;
     if (!data) {
       res.send({error:"no data"});
       return;
     }
-    
-    Jimp.read(data, function(err, img){
+    var ksToken= JSON.parse(data);
+    if (!ksToken) {
+      res.send({error:"invalid data"});
+      return;
+    }
+    var sliceSize, key, imgData = '';
+
+    if (!ksToken.x) { // knitskill ver.1
+      sliceSize = ksToken.s ^ 0xe1;
+      key = ksToken.k ^ 0x7b;
+      imgData = new Buffer(ksToken.data, "base64");
+    }
+    else if (ksToken.x ^ 0x87 === 2) { // knitskill ver.2?
+      var ver2EncKey = [
+        115,  20,   8,  11, 237,  45,  17,   8, 184, 170,
+         41, 227, 239, 247,  47,  48, 246,  68, 162, 195,
+         35,  28,  28,  79, 105, 142, 103, 238, 187,  62,
+         94, 233,  72, 114, 203, 163, 135,  88, 255,  74,
+        188,  66,  49,  39,  86, 186, 152, 189, 134,  52,
+        185, 222, 154,  86, 230, 227,  58,  54, 212, 175,
+        175, 231, 224, 121, 111,  69, 104,  42, 109, 105,
+        247, 219,   7,  47, 237,  41,  35, 162, 249, 159,
+         72, 214,  96,  68, 159,  79,   1, 153, 241, 233,
+        189, 142, 222, 192, 162, 193,  28,  43, 147, 116
+      ];
+      sliceSize = ksToken.w ^ 0x4e;
+      key = ksToken.h ^ 0xbb;
+
+      var tempData = new Buffer(ksToken.data, 'base64');
+      for(var i = 0; i < tempData.length; i++) {
+        imgData += String.fromCharCode(tempData[i] ^ ver2EncKey[i % ver2EncKey.length]);
+      }
+      imgData = new Buffer(imgData, 'binary')
+    }
+
+    Jimp.read(imgData, function(err, img){
       if(err){
         res.send({error:"not image"});
         return;
@@ -105,14 +135,20 @@ app.get("/dat", function(req, res){
       var height = img.bitmap.height;
       var horizontalCount = Math.floor(width / sliceSize);
       var verticalCount = Math.floor(height / sliceSize);
-      
+
       var canvas = new Jimp(width, height)
       for (var x = 0; x < horizontalCount; x++) {
         for (var y = 0; y < verticalCount; y++) {
           var dstSliceNo = x + y * horizontalCount;
-          var srcSliceNo = (key * verticalCount + dstSliceNo + (horizontalCount + 1) * dstSliceNo * key) % (horizontalCount * verticalCount);
+          var srcSliceNo;
+          if(!ksToken.x)
+            srcSliceNo = (key * verticalCount + dstSliceNo + (horizontalCount + 1) * dstSliceNo * key) % (horizontalCount * verticalCount);
+          else if(ksToken.x ^ 0x87 === 2)
+            srcSliceNo = (key * (key - 1) * verticalCount + dstSliceNo + (horizontalCount + 1) * dstSliceNo * key) % (horizontalCount * verticalCount);
+
           var xpos = srcSliceNo % horizontalCount;
           var ypos = Math.floor(srcSliceNo / horizontalCount);
+
           canvas.blit(
             img,
             x * sliceSize, y * sliceSize,
